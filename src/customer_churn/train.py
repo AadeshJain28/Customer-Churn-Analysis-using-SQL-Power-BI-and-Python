@@ -104,6 +104,7 @@ def main() -> None:
     sens = cost_sensitivity(y_te, cal_proba, cfg)
     sens.to_csv(reports / "cost_sensitivity.csv", index=False)
 
+    from .config import library_versions
     from .features import schema_fingerprint
 
     joblib.dump(
@@ -116,6 +117,7 @@ def main() -> None:
             # rather than the mismatch surfacing as a ValueError inside StandardScaler.
             "schema": schema_fingerprint(X_tr, cfg),
             "feature_names": cfg.feature_names,
+            "versions": library_versions(),
         },
         models / "churn_model.joblib",
     )

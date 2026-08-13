@@ -19,3 +19,7 @@ data/processed/*.duckdb
 # The scoring model ships with the repo so a hosted app has no cold-start training
 # step. It is small; the exception below overrides the blanket *.joblib rule above.
 !models/churn_model.joblib
+
+# build output from `pip install -e .`
+*.egg-info/
+src/*.egg-info/
