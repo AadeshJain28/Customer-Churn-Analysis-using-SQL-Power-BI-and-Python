@@ -1,0 +1,20 @@
+{
+  "n_rows_raw": 6418,
+  "n_rows_modelling": 6007,
+  "n_rows_scoring": 411,
+  "duplicate_customer_ids": 0,
+  "exact_duplicate_rows": 0,
+  "churn_rate": 0.2883,
+  "majority_class_accuracy": 0.7117,
+  "churn_category_nonnull_when_churned": 1.0,
+  "churn_category_nonnull_when_stayed": 0.0,
+  "churn_reason_nonnull_when_churned": 1.0,
+  "churn_reason_nonnull_when_stayed": 0.0,
+  "internet_block_null_rows": 1223,
+  "value_deal_null_rows": 3297,
+  "mean_tenure_churned": 17.52,
+  "mean_tenure_stayed": 17.35,
+  "mean_revenue_churned": 1969.95,
+  "mean_revenue_stayed": 3745.06,
+  "revenue_gap_explained_by_tenure": false
+}

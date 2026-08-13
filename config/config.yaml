@@ -1,0 +1,99 @@
+data:
+  raw: data/raw/Customer_Data.csv
+  duckdb: data/processed/churn.duckdb
+
+sql_dir: sql
+sql_scripts: [01_staging.sql, 02_profile.sql, 03_nullcheck.sql, 04_production.sql, 05_views.sql]
+
+target:
+  column: Customer_Status
+  positive_class: Churned
+  negative_class: Stayed
+
+# Populated for 100% of churned and 0% of stayed customers: either column alone
+# separates the classes perfectly. Excluded in SQL and refused again in Python.
+banned_features: [Churn_Category, Churn_Reason, Customer_ID]
+
+# --------------------------------------------------------------------------------
+# Explicit schema. This used to be inferred at fit time with select_dtypes(), which
+# produced a train/serve skew bug: DuckDB's CSV sniffer types the 13 Yes/No columns
+# as BOOLEAN, so `include=["number","bool"]` swept them into StandardScaler during
+# training, while the app fed the same columns in from the raw CSV as the strings
+# "Yes"/"No". Declaring the split here means the model's view of the data cannot
+# depend on which reader loaded it.
+#
+# NOTE: every Yes/No value below is quoted. In YAML 1.1 an unquoted `No` parses as
+# the boolean false, which would silently reintroduce the same class of bug.
+# --------------------------------------------------------------------------------
+schema:
+  numeric_features:
+    - Age
+    - Number_of_Referrals
+    - Tenure_in_Months
+    - Monthly_Charge
+    - Total_Charges
+    - Total_Refunds
+    - Total_Extra_Data_Charges
+    - Total_Long_Distance_Charges
+    - Total_Revenue
+
+  categorical_features:
+    - Gender
+    - Married
+    - State
+    - Value_Deal
+    - Phone_Service
+    - Multiple_Lines
+    - Internet_Service
+    - Internet_Type
+    - Online_Security
+    - Online_Backup
+    - Device_Protection_Plan
+    - Premium_Support
+    - Streaming_TV
+    - Streaming_Movies
+    - Streaming_Music
+    - Unlimited_Data
+    - Contract
+    - Paperless_Billing
+    - Payment_Method
+
+  # Mirrors the COALESCE defaults in sql/04_production.sql exactly, so a frame read
+  # straight from the CSV ends up identical to one read from vw_churn_data.
+  # tests/test_schema.py asserts the two lists have not drifted apart.
+  null_fill:
+    Value_Deal: "None"
+    Multiple_Lines: "No"
+    Internet_Type: "None"
+    Online_Security: "No"
+    Online_Backup: "No"
+    Device_Protection_Plan: "No"
+    Premium_Support: "No"
+    Streaming_TV: "No"
+    Streaming_Movies: "No"
+    Streaming_Music: "No"
+    Unlimited_Data: "No"
+
+  # How a boolean column is rendered back into the categorical vocabulary.
+  boolean_true: "Yes"
+  boolean_false: "No"
+
+split:
+  test_size: 0.2
+  seed: 42
+  stratify: true
+
+cv:
+  n_splits: 5
+  seed: 42
+
+# The business asks "who is about to leave", so recall on churners is the metric that
+# matters and accuracy is close to meaningless at a 28.8% base rate. Threshold is chosen
+# to maximise expected value under the costs below, not left at 0.5.
+costs:
+  intervention: 1.0
+  missed_churner: 8.0
+
+paths:
+  models: models
+  reports: reports

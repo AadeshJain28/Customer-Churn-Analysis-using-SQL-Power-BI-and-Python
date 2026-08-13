@@ -1,0 +1,5 @@
+name,accuracy,precision,recall,f1,flagged_share
+majority_class,0.7113,0.0,0.0,0.0,0.0
+flag_everyone,0.2887,0.2887,1.0,0.448,1.0
+rule_month_to_month,0.7379,0.5284,0.8588,0.6542,0.4692
+rule_tenure_lt_6m,0.6448,0.2872,0.1556,0.2019,0.1564

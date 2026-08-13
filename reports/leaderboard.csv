@@ -1,0 +1,13 @@
+model,variant,threshold,accuracy,precision,recall,f1,roc_auc,pr_auc,brier,flagged_share,expected_cost
+logistic_regression,threshold_0.5,0.5,0.782,0.5891,0.8098,0.682,0.871,0.753,0.1471,0.3968,1005.0
+logistic_regression,cost_optimal,0.19,0.6564,0.454,0.9395,0.6122,0.871,0.753,0.1471,0.5973,886.0
+decision_tree,threshold_0.5,0.5,0.7995,0.6268,0.755,0.685,0.865,0.741,0.1393,0.3478,1098.0
+decision_tree,cost_optimal,0.12,0.6705,0.464,0.9107,0.6148,0.865,0.741,0.1393,0.5666,929.0
+random_forest_notebook,threshold_0.5,0.5,0.8478,0.8037,0.6254,0.7034,0.8903,0.811,0.1119,0.2246,1310.0
+random_forest_notebook,cost_optimal,0.14,0.6905,0.4813,0.928,0.6339,0.8903,0.811,0.1119,0.5566,869.0
+random_forest_balanced,threshold_0.5,0.5,0.8469,0.8099,0.6138,0.6984,0.8927,0.8166,0.1109,0.2188,1335.0
+random_forest_balanced,cost_optimal,0.13,0.6905,0.4814,0.9337,0.6353,0.8927,0.8166,0.1109,0.5599,857.0
+gradient_boosting,threshold_0.5,0.5,0.8527,0.8125,0.6369,0.7141,0.8967,0.8257,0.1087,0.2263,1280.0
+gradient_boosting,cost_optimal,0.09,0.6814,0.4739,0.9424,0.6307,0.8967,0.8257,0.1087,0.574,850.0
+xgboost,threshold_0.5,0.5,0.8386,0.7722,0.6254,0.6911,0.8875,0.8091,0.1152,0.2338,1321.0
+xgboost,cost_optimal,0.04,0.6256,0.4332,0.9625,0.5975,0.8875,0.8091,0.1152,0.6414,875.0

@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-ci.txt
+          pip install -e . --no-deps
+
+      - name: Lint (advisory)
+        continue-on-error: true
+        run: ruff check src tests app
+
+      # The audit needs nothing but pandas, so it runs on every push and the
+      # headline figures in the README can never go stale unnoticed.
+      - name: Data audit
+        run: python -m customer_churn.audit
+
+      - name: Leakage guard
+        run: pytest tests/test_leakage_guard.py -v
+
+      # Train/serve skew: the schema must not depend on which reader loaded the data.
+      # This is the check that would have caught the StandardScaler/'Yes' failure.
+      - name: Schema contract
+        run: pytest tests/test_schema.py -v
+
+      - name: SQL port fidelity
+        run: pytest tests/test_sql.py -v
+
+      - name: Test
+        run: pytest --cov=customer_churn
